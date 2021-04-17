@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="22cd917a-2f73-461e-8dba-b7d3e91f5c93" >
+		<http:listener-connection protocol="HTTPS" host="0.0.0.0" port="8082" tlsContext="TLS_Context_TwoWay_SSL"/>
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="faa65033-4b7d-490c-9a28-073a087bdfc3" >
+		<http:request-connection protocol="HTTPS" tlsContext="TLS_Context_TwoWay_SSL_With_External_Service"/>
+	</http:request-config>	
+	<tls:context name="TLS_Context_OneWay_SSL" doc:name="TLS Context" doc:id="c317187c-e8aa-47ee-9f6d-6778d0d64f7f" >
+		<tls:key-store type="pkcs12" path="ssl/server-keystore.p12" keyPassword="password" password="password" />
+	</tls:context>
+	<tls:context name="TLS_Context_TwoWay_SSL" doc:name="TLS Context" doc:id="8909305e-0070-4b0f-8be0-41a0ad12b290" >
+		<tls:trust-store path="ssl/trusted-client-truststore.p12" password="password" type="pkcs12" />
+		<tls:key-store type="pkcs12" path="ssl/server-keystore.p12" keyPassword="password" password="password" />
+	</tls:context>
+	<tls:context name="TLS_Context_TwoWay_SSL_With_External_Service" doc:name="TLS Context" doc:id="588461bb-846e-40e8-9e44-03916a692095" >
+		<tls:trust-store path="ssl/trusted-client-truststore.p12" password="password" type="pkcs12" />
+	</tls:context>
+	<tls:context name="TLS_Context_OneWay_SSL_With_External_Service" doc:name="TLS Context" doc:id="e9d6c515-4366-4203-a16a-dee1102cf62a" >
+		<tls:trust-store path="ssl/trusted-client-truststore.p12" password="password" type="pkcs12" />
+	</tls:context>
+	<flow name="mule-https-listenerFlow" doc:id="c9405fed-4917-4bd8-ad00-4e3ecf944ee5" >
+		<http:listener doc:name="HTTPS Listener test" doc:id="07fb8883-4da7-4801-afc9-a44d63383f6b" config-ref="HTTP_Listener_config" path="/https-listener-test"/>
+		<set-payload value="Hello..You just called HTTPS listener successfully" doc:name="Set Payload" doc:id="f49aa414-8442-4a8a-b13a-612c630cdc38" />
+	</flow>
+	<flow name="mule-https-listenerFlow1" doc:id="3dff2614-7d2d-43de-b5da-1867500667b4" >
+		<http:listener doc:name="HTTPS Listener and HTTPS Request test" doc:id="70d0c16c-5f5b-4c09-94f4-1cbdc654a0fe" config-ref="HTTP_Listener_config" path="/https-listener-and-https-request-test"/>
+		<http:request method="GET" doc:name="https://gorest.co.in" doc:id="dd068921-a61e-48da-87d1-6517efd35ab2" config-ref="HTTP_Request_configuration" url="https://gorest.co.in/public-api/users/359"/>
+	</flow>
+</mule>
